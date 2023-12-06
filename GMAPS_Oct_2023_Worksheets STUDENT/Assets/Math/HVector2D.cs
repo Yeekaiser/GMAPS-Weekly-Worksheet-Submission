@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-//[Serializable]
+
 public class HVector2D
 {
     public float x, y;
@@ -30,63 +30,68 @@ public class HVector2D
         h = 1.0f;
     }
 
-    // public static HVector2D operator +( /*???*/)
-    // {
+    //operators for +, -, *, /. Done using method overloading
+    public static HVector2D operator +( HVector2D a, HVector2D b)
+    {
+        return new HVector2D (a.x + b.x, a.y + b.y);
+    }
 
-    // }
+    public static HVector2D operator -(HVector2D a, HVector2D b)
+    {
+        return new HVector2D (a.x - b.x, a.y - b.y);
+    }
 
-    // public static HVector2D operator -(/*???*/)
-    // {
+    public static HVector2D operator *(HVector2D a, float scalar)
+    {
+        return new HVector2D (a.x * scalar, a.y * scalar);
+    }
 
-    // }
+    public static HVector2D operator /(HVector2D a, float scalar)
+    {
+        return new HVector2D (a.x / scalar, a.y / scalar);
+    }
 
-    // public static HVector2D operator *(/*???*/)
-    // {
+    //calculates the magnitude of the 2D Vector using pythagoras' theorem
+    public float Magnitude()
+    {
+        return MathF.Sqrt(x * x + y * y);   
+    }
 
-    // }
+    public void Normalize()
+    {
+        float mag = Magnitude();
+        x /= mag;
+        y /= mag;
+    }
 
-    // public static HVector2D operator /(/*???*/)
-    // {
+    public float DotProduct(HVector2D a)
+    {
+        return x * a.x + y * a.y;
+    }
 
-    // }
+    public HVector2D Projection(HVector2D a)
+    {
+        HVector2D proj = a * (DotProduct(a) / a.DotProduct(a));
+        return proj;
+    }
 
-    // public float Magnitude()
-    // {
-
-    // }
-
-    // public void Normalize()
-    // {
-
-    // }
-
-    // public float DotProduct(/*???*/)
-    // {
-
-    // }
-
-    // public HVector2D Projection(/*???*/)
-    // {
-
-    // }
-
-    // public float FindAngle(/*???*/)
-    // {
-
-    // }
+    public float FindAngle(HVector2D vec)
+    {
+        return (float)Math.Acos(DotProduct(vec)/(Magnitude() * vec.Magnitude()));
+    }
 
     public Vector2 ToUnityVector2()
     {
-        return Vector2.zero; // change this
+        return new Vector2(x, y);
     }
 
     public Vector3 ToUnityVector3()
     {
-        return Vector2.zero; // change this
+        return new Vector3(x, y, 0);
     }
 
-    // public void Print()
-    // {
-
-    // }
+    public void Print()
+    {
+        Debug.Log($"({x}, {y}, {h})");
+    }
 }

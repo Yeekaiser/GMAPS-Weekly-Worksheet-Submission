@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 
 public class HMatrix2D
@@ -13,7 +15,12 @@ public class HMatrix2D
 
     public HMatrix2D(float[,] multiArray)
     {
-        Entries = multiArray;
+        for (int y = 0; y < multiArray.GetLength(0); y++)
+            for (int x = 0; x < multiArray.GetLength(1); x++)
+            {
+                Entries = multiArray;
+
+            }
     }
 
     public HMatrix2D(float m00, float m01, float m02,
@@ -36,20 +43,29 @@ public class HMatrix2D
         m22 = Entries[2, 2];
     }
 
-    //public static HMatrix2D operator +(HMatrix2D left, HMatrix2D right)
-    //{
-    //    return // your code here
-    //}
+    public static HMatrix2D operator +(HMatrix2D left, HMatrix2D right)
+    {
+        for (int y = 0; y < 3; y++) //for each row
+            for (int x = 0; x < 3; x++) //for each column
+                left.Entries[y, x] += right.Entries[y, x];  //add the values of the respective element from the left and right matrices together and assign it to the left matrix
+        return left;
+    }
 
-    //public static HMatrix2D operator -(HMatrix2D left, HMatrix2D right)
-    //{
-    //    return // your code here
-    //}
+    public static HMatrix2D operator -(HMatrix2D left, HMatrix2D right)
+    {
+        for (int y = 0; y < 3; y++) //for each row
+            for (int x = 0; x < 3; x++) //for each column
+                left.Entries[y, x] -= right.Entries[y, x];   //subtract the value of the right matrix from the respective element of left matrix and assign it to the left matrix
+        return left;
+    }
 
-    //public static HMatrix2D operator *(HMatrix2D left, float scalar)
-    //{
-    //    return // your code here
-    //}
+    public static HMatrix2D operator *(HMatrix2D left, float scalar)
+    {
+        for (int y = 0; y < 3; y++) //for each row
+            for (int x = 0; x < 3; x++) //for each column
+                left.Entries[y, x] *= scalar;   //multiply each element of the left matrix by the scalar value
+        return left;
+    }
 
     //// Note that the second argument is a HVector2D object
     ////
@@ -82,15 +98,23 @@ public class HMatrix2D
     //);
     //}
 
-    //public static bool operator ==(HMatrix2D left, HMatrix2D right)
-    //{
-    //    // your code here
-    //}
+    public static bool operator ==(HMatrix2D left, HMatrix2D right)
+    {
+        for(int y = 0; y < 3; y++)
+            for(int x = 0; x < 3; x++)
+                if (left.Entries[y, x] != right.Entries[y,x])
+                    return false;
+        return true;
+    }
 
-    //public static bool operator !=(HMatrix2D left, HMatrix2D right)
-    //{
-    //    // your code here
-    //}
+    public static bool operator !=(HMatrix2D left, HMatrix2D right)
+    {
+        for (int y = 0; y < 3; y++)
+            for (int x = 0; x < 3; x++)
+                if (left.Entries[y, x] == right.Entries[y, x])
+                    return true;
+        return false;
+    }
 
     //public HMatrix2D transpose()
     //{
@@ -102,17 +126,20 @@ public class HMatrix2D
     //    return // your code here
     //}
 
-    public void SetIdentity()
+    public void SetIdentity()   //sets the values in the matrix to be an identity matrix
     {
-        for (int y = 0; y < 3; y++)
-            for (int x = 0; x < 3; x++)
-                Entries[y,x] = (x == y) ? 1 : 0;
+        //used ternary operator to keep code clean and short
+        for (int y = 0; y < 3; y++)     //for each row
+            for (int x = 0; x < 3; x++) //for each column
+                Entries[y,x] = (x == y) ? 1 : 0;    //sets the value to 1 if the column and row number is the same, and sets to 0 for the rest
                 
-        //for(int y = 0; y < 3;  y++ )
+        //original code using if/else statements
+        //for(int y = 0; y < 3;  y++ )  //for each row
         //{
-        //    for(int x = 0; x < 3; x++)
+        //    for(int x = 0; x < 3; x++)    //for each column
         //    {
-        //        if(x == y)
+                  //sets the value to 1 if the column and row number is the same, and sets to 0 for the rest
+        //        if(x == y)    
         //        {
         //            Entries[y, x] = 1;
         //        }
